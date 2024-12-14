@@ -1,11 +1,17 @@
-const width = 512;
-const height = 512;
 const container = document.querySelector("#container");
-container.style.height = height + "px";
-container.style.width = width + "px";
 let colorOn = false;
 
+// Set container size based on screen dimensions
+function setContainerSize() {
+    const width = window.innerWidth * 0.5;
+    const height = window.innerHeight * 0.5;
+    container.style.width = width + "px";
+    container.style.height = height + "px";
+}
+
+// Create the grid
 function createGrid(rows, cols) {
+    container.innerHTML = "";  // Clear existing grid
     for (let i = 0; i < rows * cols; i++) {
         const div = document.createElement("div");
         div.classList.add("grid-item");
@@ -22,50 +28,45 @@ function createGrid(rows, cols) {
                 div.style.opacity = currentOpacity.toFixed(1);
             }
             div.style.border = "1px solid rgba(156, 127, 127, 1)";
-            if (colorOn) {
-                div.style.backgroundColor = getRandomRgbColor();
-                div.classList.add("black");
-            } else {
-                div.style.backgroundColor = "black";
-                div.classList.add("black");
-            }
+            div.style.backgroundColor = colorOn ? getRandomRgbColor() : "black";
+            div.classList.add("black");
         }
 
         div.addEventListener("mouseover", () => {
             if (isMouseDown) handleHover();
         });
 
-        div.addEventListener("click", () => {
-                handleHover();
-        });
+        div.addEventListener("click", handleHover);
     }
 }
 
-createGrid(16, 16);
-
+// Track mouse state
 let isMouseDown = false;
 document.addEventListener("mousedown", () => (isMouseDown = true));
 document.addEventListener("mouseup", () => (isMouseDown = false));
 
+// Reset button functionality
 const reset = document.querySelector("#reset");
 reset.addEventListener("click", () => {
-    const cells = document.querySelectorAll(".grid-item");
-    cells.forEach((cell) => {
+    document.querySelectorAll(".grid-item").forEach(cell => {
         cell.style.backgroundColor = "white";
         cell.style.opacity = "0.1";
-        if (cell.classList.contains("black")) {
-            cell.classList.remove("black");
-        }
+        cell.classList.remove("black");
     });
 });
 
+// Resize grid on screen size change
+window.addEventListener("resize", () => {
+    setContainerSize();
+    createGrid(16, 16);  // Recreate the default grid on resize
+});
+
+// Handle size changes from input
 const go = document.querySelector("#go");
 go.addEventListener("click", () => {
     const size = document.querySelector("#size");
     const newSize = parseInt(size.value);
     if (newSize >= 1 && newSize <= 100) {
-        const cells = document.querySelectorAll(".grid-item");
-        cells.forEach((cell) => container.removeChild(cell));
         createGrid(newSize, newSize);
         size.value = "";
     } else {
@@ -74,6 +75,15 @@ go.addEventListener("click", () => {
     }
 });
 
+// Toggle color mode
+const color = document.querySelector("#color");
+color.addEventListener("click", () => {
+    reset.click();
+    color.textContent = colorOn ? "Color" : "No Color";
+    colorOn = !colorOn;
+});
+
+// Generate random RGB color
 function getRandomRgbColor() {
     const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
@@ -81,14 +91,6 @@ function getRandomRgbColor() {
     return `rgb(${r}, ${g}, ${b})`;
 }
 
-const color = document.querySelector("#color");
-color.addEventListener("click", () => {
-    reset.click();
-    if (color.textContent === "Color") {
-        color.textContent = "No Color";
-        colorOn = true;
-    } else {
-        color.textContent = "Color";
-        colorOn = false;
-    }
-});
+// Initialize
+setContainerSize();
+createGrid(16, 16);
