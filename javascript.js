@@ -35,17 +35,8 @@ function createGrid(rows, cols) {
             if (isMouseDown) handleHover();
         });
 
-        div.addEventListener("touchstart", (e) => {
-            e.preventDefault();
-            handleHover();
-        });
-
         div.addEventListener("click", () => {
-            if (div.classList.contains("black")) {
-                div.style.opacity = "0.1";
-                div.style.backgroundColor = "white";
-                div.classList.remove("black");
-            }
+                handleHover();
         });
     }
 }
