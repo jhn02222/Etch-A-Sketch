@@ -1,10 +1,10 @@
 const container = document.querySelector("#container");
 let colorOn = false;
 
-// Set container size based on screen dimensions
+// Set container size as a fraction of the screen
 function setContainerSize() {
-    const width = window.innerWidth * 0.5;
-    const height = window.innerHeight * 0.5;
+    const width = window.innerWidth * 0.8; // 80% of viewport width
+    const height = window.innerHeight * 0.8; // 80% of viewport height
     container.style.width = width + "px";
     container.style.height = height + "px";
 }
@@ -27,7 +27,6 @@ function createGrid(rows, cols) {
                 currentOpacity += 0.1;
                 div.style.opacity = currentOpacity.toFixed(1);
             }
-            div.style.border = "1px solid rgba(156, 127, 127, 1)";
             div.style.backgroundColor = colorOn ? getRandomRgbColor() : "black";
             div.classList.add("black");
         }
@@ -53,12 +52,6 @@ reset.addEventListener("click", () => {
         cell.style.opacity = "0.1";
         cell.classList.remove("black");
     });
-});
-
-// Resize grid on screen size change
-window.addEventListener("resize", () => {
-    setContainerSize();
-    createGrid(16, 16);  // Recreate the default grid on resize
 });
 
 // Handle size changes from input
@@ -94,3 +87,4 @@ function getRandomRgbColor() {
 // Initialize
 setContainerSize();
 createGrid(16, 16);
+window.addEventListener("resize", setContainerSize);
