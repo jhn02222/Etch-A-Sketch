@@ -35,7 +35,8 @@ function createGrid(rows, cols) {
             if (isMouseDown) handleHover();
         });
 
-        div.addEventListener("touchstart", () => {
+        div.addEventListener("touchstart", (e) => {
+            e.preventDefault();
             handleHover();
         });
 
