@@ -17,26 +17,23 @@ function createGrid(rows, cols) {
         div.classList.add("grid-item");
         div.style.height = `calc(100% / ${rows})`;
         div.style.width = `calc(100% / ${cols})`;
-        div.style.opacity = "0.1";
-        div.style.border = "1px solid rgba(156, 127, 127, 1)";
+        div.style.opacity = "1"; // Set opacity to 1
+        div.style.border = "1px solid rgba(211, 211, 211, 1)";
         container.appendChild(div);
 
-        function handleHover() {
-            let currentOpacity = parseFloat(div.style.opacity);
-            if (currentOpacity < 1) {
-                currentOpacity += 0.1;
-                div.style.opacity = currentOpacity.toFixed(1);
-            }
-            div.style.backgroundColor = colorOn ? getRandomRgbColor() : "black";
-            div.classList.add("black");
-        }
-
         div.addEventListener("mouseover", () => {
-            if (isMouseDown) handleHover();
+            if (isMouseDown) handleHover(div);
         });
 
-        div.addEventListener("click", handleHover);
+        div.addEventListener("click", () => {
+            handleHover(div);
+        });
     }
+}
+
+// Handle hover action (set background color)
+function handleHover(div) {
+    div.style.backgroundColor = colorOn ? getRandomRgbColor() : "black";
 }
 
 // Track mouse state
@@ -44,13 +41,57 @@ let isMouseDown = false;
 document.addEventListener("mousedown", () => (isMouseDown = true));
 document.addEventListener("mouseup", () => (isMouseDown = false));
 
+// Switch button functionality
+const switchButton = document.querySelector("#mySwitch");
+
+// Store the event listener functions to reference later
+const handleClickOn = (cell) => {
+    cell.style.backgroundColor = "white";
+};
+
+const handleClickOff = (cell) => {
+    handleHover(cell);
+};
+
+// Switch button functionality
+switchButton.addEventListener("change", () => {
+    const cells = document.querySelectorAll(".grid-item");
+    if (switchButton.checked) {
+        // Switch is ON: reset grid cells to white when clicked and hover doesn't change color
+        cells.forEach(cell => {
+            cell.removeEventListener("click", handleClickOff); // Remove previous 'click' listener
+            cell.addEventListener("click", () => handleClickOn(cell)); // Add the 'click' listener for the ON state
+        });
+        cells.forEach(cell =>{
+            cell.removeEventListener("mouseover", handleClickOff); // Remove previous 'click' listener
+            cell.addEventListener("mouseover", () => {
+                if(isMouseDown) {
+                handleClickOn(cell)
+                }
+            }); // Add the 'click' listener for the
+        })
+    } else {
+        // Switch is OFF: handle hover functionality (color changes)
+        cells.forEach(cell => {
+            cell.removeEventListener("click", handleClickOn); // Remove previous 'click' listener
+            cell.addEventListener("click", () => handleClickOff(cell)); // Add the 'click' listener for the OFF state
+        });
+        cells.forEach(cell => {
+            cell.removeEventListener("mouseover", handleClickOn); // Remove previous 'click' listener
+            cell.addEventListener("mouseover", () => {
+                if(isMouseDown) {
+                handleClickOff(cell)
+                }
+        });
+        });
+    }
+});
+
 // Reset button functionality
 const reset = document.querySelector("#reset");
 reset.addEventListener("click", () => {
     document.querySelectorAll(".grid-item").forEach(cell => {
         cell.style.backgroundColor = "white";
-        cell.style.opacity = "0.1";
-        cell.classList.remove("black");
     });
 });
 
@@ -72,8 +113,8 @@ go.addEventListener("click", () => {
 const color = document.querySelector("#color");
 color.addEventListener("click", () => {
     reset.click();
-    color.textContent = colorOn ? "Color" : "No Color";
     colorOn = !colorOn;
+    color.textContent = colorOn ? "No Color" : "Color";
 });
 
 // Generate random RGB color

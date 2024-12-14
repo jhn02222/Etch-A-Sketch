@@ -7,14 +7,22 @@
     <link rel="stylesheet" href="etch.css">
 </head>
 <body>
+    <div id="body">
     <h1>Etch-a-Sketch!</h1>
     <div id="container"></div>
     <div id="buttons">
         <button id="reset">Reset</button>
         <button id="color">Color</button>
+        <label class="switch">
+            <input type="checkbox" id="mySwitch">
+            <span class="slider"></span>
+          </label>
     </div>
+    <div id="textbox">
     <textarea id="size"></textarea>
     <button id="go">Go</button>
+    </div>
+</div>
     <script src="javascript.js"></script>
 </body>
 </html>
