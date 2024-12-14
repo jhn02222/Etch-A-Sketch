@@ -1,0 +1,16 @@
+/* Reset for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#container {
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid black;
+}
+
+.grid-item {
+   
+}
